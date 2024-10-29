@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        "auth_bg": "url('/images/authentication.png')",
+        "quran_bg": "url('/images/quran-background.jpg')",
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
