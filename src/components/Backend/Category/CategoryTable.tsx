@@ -10,9 +10,8 @@ import {
   Select,
   Table,
   TableColumnsType,
-  Upload,
 } from "antd";
-import Image, { StaticImageData } from "next/image";
+import { StaticImageData } from "next/image";
 import React, { useState } from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import computer from "../../../../public/images/computer.png";
@@ -20,7 +19,7 @@ import laptop from "../../../../public/images/laptop.png";
 import supplies from "../../../../public/images/supplies.png";
 import TextArea from "antd/es/input/TextArea";
 
-const { Option } = Select;
+// const { Option } = Select;
 
 interface DataType {
   key: React.Key;

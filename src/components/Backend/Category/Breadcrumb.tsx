@@ -1,12 +1,12 @@
 "use client";
 
-import { Form, Input, Modal, Select, Upload } from "antd";
+import { Form, Input, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FaAngleRight, FaPlus } from "react-icons/fa";
 
-const { Option } = Select;
+// const { Option } = Select;
 
 export const Breadcrumb = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
