@@ -1,13 +1,45 @@
 "use client";
 
-import React from "react";
-import { Form, Input, Select, Button } from "antd";
-import Image from "next/image";
-import thumbnail from "../../../../public/images/computer.png";
+import React, { useState } from "react";
+import {
+  Form,
+  Input,
+  Select,
+  Button,
+  Upload,
+  GetProp,
+  UploadProps,
+  UploadFile,
+} from "antd";
+import ImgCrop from "antd-img-crop";
 
 const { Option } = Select;
 
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+
 export const AddChannelCompound = () => {
+  const [posterList, setPosterList] = useState<UploadFile[]>([]);
+  const onChangePosterList: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => {
+    setPosterList(newFileList);
+  };
+
+  const onPreviewPoster = async (file: UploadFile) => {
+    let src = file.url as string;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj as FileType);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    const image = new window.Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
+
   const onFinish = (values: string) => {
     console.log("Form values:", values);
   };
@@ -103,24 +135,25 @@ export const AddChannelCompound = () => {
         <div className="bg-white rounded border p-5 shadow-md w-full h-full mb-5">
           <p className="border-b pb-5 mb-5 font-bold">Additional Info</p>
 
-          <p className="text-left">Poster</p>
-          <Image
-            className="w-40 h-auto rounded m-auto block"
-            src={thumbnail}
-            alt={"Poster"}
-          />
-          <Form.Item
-            className="mt-3 w-full"
-            name="title"
-            rules={[{ required: true, message: "Please enter poster!" }]}
-          >
-            <Input className="py-2" placeholder="Thumbnail URL" />
-          </Form.Item>
+          <p className="text-left mb-2">Poster</p>
+          <ImgCrop rotationSlider aspect={16 / 9}>
+            <Upload
+              action="https://660d2bd96ddfa2943b33731c.mockapi.iogfdgf/api/upload"
+              listType="picture-card"
+              fileList={posterList}
+              onChange={onChangePosterList}
+              onPreview={onPreviewPoster}
+              className="h-18 w-32"
+            >
+              {posterList.length < 1 && "+ Upload"}
+            </Upload>
+          </ImgCrop>
 
           <Form.Item
             label="Genres"
             name="variant"
             rules={[{ required: true, message: "Please select variant!" }]}
+            className="mt-10"
           >
             <Select className="h-10" placeholder="Select variant">
               <Option value="Free">Free</Option>

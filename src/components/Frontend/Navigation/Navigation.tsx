@@ -39,7 +39,7 @@ export const Navigation = () => {
         </form>
         <Link
           className="bg-black mr-3 text-[#EAB308] px-3 py-3 rounded-full border-[#1f2937] flex justify-center items-center transition duration-300"
-          href={"/"}
+          href={"/tv"}
         >
           <FontAwesomeIcon className="h-4 w-4" icon={faTv} />
         </Link>

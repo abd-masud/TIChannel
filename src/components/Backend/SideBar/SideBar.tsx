@@ -12,6 +12,7 @@ import { FaUser } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa";
 import { FaList } from "react-icons/fa";
+import { BsStack } from "react-icons/bs";
 
 export const SideBar = () => {
   const pathname = usePathname();
@@ -134,6 +135,16 @@ export const SideBar = () => {
           </Link>
         </div>
       </div>
+
+      <Link
+        href={"/ti-admin/category"}
+        className={linkClass("/ti-admin/category")}
+        onClick={closeSubmenu}
+      >
+        <div className={linkBar("/ti-admin/category")}></div>
+        <BsStack className="ml-[21px] text-[16px] mr-3 w-5" />
+        Category
+      </Link>
 
       <Link
         href={"/ti-admin/genres"}

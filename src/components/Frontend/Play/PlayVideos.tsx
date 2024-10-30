@@ -50,11 +50,11 @@ export const PlayVideos: React.FC = () => {
             overlays: [
               {
                 content:
-                  "<div class='custom-overlay'>You are using free. Choose a plan</div>",
+                  "<div class='custom-overlay'>You are using free subscription. Please choose a plan</div>",
                 start: 5,
                 // end: 10,
                 align: "top-right",
-                className: "top-left-overlay",
+                className: "top-right-overlay",
               },
               // {
               //   content:
@@ -157,7 +157,7 @@ export const PlayVideos: React.FC = () => {
             <RelatedVideos />
           </div>
         </div>
-        <div className="xl:px-4 px-0">
+        <div className="">
           <button className="text-white border border-gray-600 rounded mb-4 px-10 mx-4 py-2">
             Season 1
           </button>

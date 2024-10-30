@@ -9,9 +9,9 @@ import { MdMovieEdit } from "react-icons/md";
 import { IoIosTv } from "react-icons/io";
 
 export const Card = () => {
-  const [vacationCount] = useState(20);
-  const [presentCount] = useState(180);
-  const [totalCount] = useState(200);
+  const [totalSeries] = useState(20);
+  const [unpublishedSeries] = useState(180);
+  const [liveShows] = useState(200);
 
   return (
     <main className="grid md:grid-cols-3 grid-cols-1 gap-4">
@@ -22,7 +22,7 @@ export const Card = () => {
           </h2>
           <Link
             className="bg-[#ffeff0] h-6 w-6 flex justify-center items-center rounded"
-            href={"/leave"}
+            href={"/ti-admin"}
           >
             <FaLongArrowAltRight className="text-[12px] text-primary " />
           </Link>
@@ -31,7 +31,7 @@ export const Card = () => {
         <div className="flex justify-between items-center mt-6">
           <div>
             <h2 className="text-[36px] text-[#181c32] font-bold">
-              {vacationCount}
+              {totalSeries}
             </h2>
             <p className="text-[#797c8b] text-[14px]">Videos</p>
           </div>
@@ -47,7 +47,7 @@ export const Card = () => {
           </h2>
           <Link
             className="bg-[#ffeff0] h-6 w-6 flex justify-center items-center rounded"
-            href={"/attendance"}
+            href={"/ti-admin"}
           >
             <FaLongArrowAltRight className="text-[12px] text-primary " />
           </Link>
@@ -56,7 +56,7 @@ export const Card = () => {
         <div className="flex justify-between items-center mt-6">
           <div>
             <h2 className="text-[36px] text-[#181c32] font-bold">
-              {presentCount}
+              {unpublishedSeries}
             </h2>
             <p className="text-[#797c8b] text-[14px]">Videos</p>
           </div>
@@ -72,7 +72,7 @@ export const Card = () => {
           </h2>
           <Link
             className="bg-[#ffeff0] h-6 w-6 flex justify-center items-center rounded"
-            href={"/employees"}
+            href={"/ti-admin"}
           >
             <FaLongArrowAltRight className="text-[12px] text-primary " />
           </Link>
@@ -81,7 +81,7 @@ export const Card = () => {
         <div className="flex justify-between items-center mt-6">
           <div>
             <h2 className="text-[36px] text-[#181c32] font-bold">
-              {totalCount}
+              {liveShows}
             </h2>
             <p className="text-[#797c8b] text-[14px]">Videos</p>
           </div>
