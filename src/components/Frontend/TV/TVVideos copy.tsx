@@ -2,7 +2,7 @@
 
 import { faTv } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import videojs from "video.js";
 import "@videojs/http-streaming";
 import "video.js/dist/video-js.css";
@@ -22,7 +22,6 @@ if (videojs.getPlugin("overlay") === undefined) {
 export const TVVideos: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<typeof videojs.players | null>(null);
-  const [activeButton, setActiveButton] = useState(1);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -49,18 +48,9 @@ export const TVVideos: React.FC = () => {
                 content:
                   "<a href='/subscribe' class='custom-overlay'>You are using free subscription. Please choose a plan</a>",
                 start: 5,
-                // end: 10,
                 align: "top-right",
                 className: "top-right-overlay",
               },
-              // {
-              //   content:
-              //     "<div class='custom-overlay'>Another overlay here!</div>",
-              //   start: 15,
-              //   end: 20,
-              //   align: "bottom-right",
-              //   className: "bottom-right-overlay",
-              // },
             ],
           });
         });
@@ -112,41 +102,24 @@ export const TVVideos: React.FC = () => {
               />
             </div>
             <div className="bg-gray-900">
-              {[1, 2, 3].map((server) => (
-                <button
-                  key={server}
-                  className={`text-white m-2 px-5 py-1 rounded transition duration-300 ${
-                    activeButton === server ? "bg-[#C11119]" : "bg-gray-700"
-                  }`}
-                  onClick={() => setActiveButton(server)}
-                >
-                  <FontAwesomeIcon className="h-4 w-4 mr-2" icon={faTv} />
-                  Server {server}
-                </button>
-              ))}
+              <button className="text-white bg-gray-700 hover:bg-[#C11119] m-2 px-5 py-1 rounded transition duration-300">
+                {" "}
+                <FontAwesomeIcon className="h-4 w-4 mr-2" icon={faTv} />
+                Server 1
+              </button>
+              <button className="text-white bg-gray-700 hover:bg-[#C11119] m-2 px-5 py-1 rounded transition duration-300">
+                {" "}
+                <FontAwesomeIcon className="h-4 w-4 mr-2" icon={faTv} />
+                Server 2
+              </button>
+              <button className="text-white bg-gray-700 hover:bg-[#C11119] m-2 px-5 py-1 rounded transition duration-300">
+                {" "}
+                <FontAwesomeIcon className="h-4 w-4 mr-2" icon={faTv} />
+                Server 3
+              </button>
               <button className="text-white bg-primary hover:bg-[#a70e15] m-2 px-5 py-1 rounded transition duration-300">
                 Share
               </button>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-5 sm:pt-5 pt-0 pb-10 sm:px-0 px-4 mt-10">
-            <h1 className="text-white xl:text-[36px] text-[24px] font-bold leading-10">
-              Greats of Islam - Al-Siddiq
-            </h1>
-
-            <div>
-              <p className="text-white xl:text-[16px] text-[14px]">
-                He is the companion of the Messenger of God, may God bless him
-                and grant him peace, and his first successor. Al-Siddiq had
-                unique personal characteristics. He was not only the first
-                person to convert to Islam, but he also converted the great
-                Companions. Every nation has its scholars and great
-                personalities, and he is the first great person to succeed the
-                Messenger of God. He was the friend, the advocate and the
-                supporter: the companion Abu Bakr Al-Siddiq in this special
-                documentary.
-              </p>
             </div>
           </div>
         </div>
