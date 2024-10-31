@@ -1,11 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { Navigation } from "../Navigation/Navigation";
 import Image from "next/image";
 import newArrival from "../../../../public/images/dummy.jpg";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 
 export const AccountPage = () => {
+  const [createNewPassword, setCreateNewPassword] = useState("Test User");
+  const [confirmPassword, setConfirmPassword] = useState("test@example.com");
   return (
     <main className="bg-auth_bg bg-cover bg-center bg-fixed w-screen h-screen">
       <div className="sticky top-0 z-50">
@@ -38,8 +43,8 @@ export const AccountPage = () => {
                   type="text"
                   id="createNewPassword"
                   // value={createNewPassword}
-                  // onChange={(e) => setCreateNewPassword(e.target.value)}
-                  value={"Abdullah Al Masud"}
+                  onChange={(e) => setCreateNewPassword(e.target.value)}
+                  value={"Test User"}
                   required
                 />
               </div>
@@ -56,8 +61,8 @@ export const AccountPage = () => {
                   type="email"
                   id="confirmPassword"
                   // value={confirmPassword}
-                  // onChange={(e) => setConfirmPassword(e.target.value)}
-                  value={"abdmasud.2000@gmail.com"}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  value={"test@example.com"}
                   required
                 />
               </div>

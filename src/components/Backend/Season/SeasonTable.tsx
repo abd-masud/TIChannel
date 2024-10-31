@@ -25,12 +25,12 @@ interface DataType {
   status: string;
 }
 
-export const AllSeriesTable = () => {
+export const SeasonTable = () => {
   const [data, setData] = useState<DataType[]>([
     {
       key: "1",
       thumbnail: computer,
-      title: "Prison Chronicles",
+      title: "Season 1",
       description:
         "Twin brother and sister Dipper and Mabel Pines are in for an unexpected adventure when they spend the summer helping their great uncle Stan run a tourist trap in the mysterious town of Gravity Falls, Oregon.",
       status: "Published",
@@ -38,7 +38,7 @@ export const AllSeriesTable = () => {
     {
       key: "2",
       thumbnail: laptop,
-      title: "지옥에서 온 판사",
+      title: "Season 2",
       description:
         "Twin brother and sister Dipper and Mabel Pines are in for an unexpected adventure when they spend the summer helping their great uncle Stan run a tourist trap in the mysterious town of Gravity Falls, Oregon.",
       status: "Published",
@@ -46,7 +46,7 @@ export const AllSeriesTable = () => {
     {
       key: "3",
       thumbnail: supplies,
-      title: "Z Nation",
+      title: "Season 3",
       description:
         "Twin brother and sister Dipper and Mabel Pines are in for an unexpected adventure when they spend the summer helping their great uncle Stan run a tourist trap in the mysterious town of Gravity Falls, Oregon.",
       status: "Published",
@@ -58,17 +58,6 @@ export const AllSeriesTable = () => {
   };
 
   const getMenuItems = (record: DataType): MenuProps["items"] => [
-    {
-      key: "season",
-      label: (
-        <Link href={"/ti-admin/series/season"}>
-          <Button type="link">
-            <FaPhotoFilm />
-            Seasons
-          </Button>
-        </Link>
-      ),
-    },
     {
       key: "edit",
       label: (
@@ -140,7 +129,7 @@ export const AllSeriesTable = () => {
     <main className="bg-white p-5 mt-6 rounded-lg border shadow-md">
       <div className="flex items-center pb-5">
         <div className="h-2 w-2 bg-[#E3E4EA] rounded-full mr-2"></div>
-        <h2 className="text-[13px] font-[500]">All Series</h2>
+        <h2 className="text-[13px] font-[500]">Seasons</h2>
       </div>
       <Table scroll={{ x: 700 }} columns={columns} dataSource={data} bordered />
     </main>

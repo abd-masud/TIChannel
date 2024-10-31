@@ -31,10 +31,8 @@ export const UserPage = () => {
               width={80}
               alt={"User Account"}
             />
-            <p className="text-white font-bold text-[18px] mt-5">
-              Abdullah Al Masud
-            </p>
-            <p className="text-white text-[14px]">abdmasud.2000@gmail.com</p>
+            <p className="text-white font-bold text-[18px] mt-5">Test User</p>
+            <p className="text-white text-[14px]">test@example.com</p>
           </div>
           <div className="flex flex-col divide-y mt-5">
             <Link className="text-[#EAB308] py-4" href={"/subscribe"}>

@@ -19,7 +19,7 @@ const { Option } = Select;
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
-export const AddSeriesCompound = () => {
+export const EditSeriesCompound = () => {
   const [thumbnailList, setThumbnailList] = useState<UploadFile[]>([]);
   const [posterList, setPosterList] = useState<UploadFile[]>([]);
   const [previewImage, setPreviewImage] = useState<string | undefined>();
@@ -175,7 +175,7 @@ export const AddSeriesCompound = () => {
           </Form.Item>
           <Form.Item>
             <Button className="flex" type="primary" htmlType="submit">
-              Submit
+              Save
             </Button>
           </Form.Item>
         </div>

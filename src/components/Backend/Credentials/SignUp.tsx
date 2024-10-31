@@ -56,8 +56,10 @@ export const SignUpPage = () => {
       )}
       <div className="bg-[#F5F8FA] flex justify-center items-center h-screen sm:px-10 px-5">
         <div className="flex flex-col gap-7 bg-white shadow-lg sm:px-10 px-8 sm:py-10 py-8 w-[400px] border-2">
-          <p className="text-black font-bold text-center text-[30px]">
-            <span className="text-primary">TI</span> Channel
+          <p className="text-black font-bold text-center text-[30px] inline-block">
+            <Link href={"/"}>
+              <span className="text-primary">TI</span> Channel
+            </Link>
           </p>
           <form onSubmit={handleSubmit}>
             <label className="font-[500] text-[14px]" htmlFor="name">

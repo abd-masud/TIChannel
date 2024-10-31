@@ -19,7 +19,7 @@ const { Option } = Select;
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
-export const AddSeriesCompound = () => {
+export const AddSeasonCompound = () => {
   const [thumbnailList, setThumbnailList] = useState<UploadFile[]>([]);
   const [posterList, setPosterList] = useState<UploadFile[]>([]);
   const [previewImage, setPreviewImage] = useState<string | undefined>();

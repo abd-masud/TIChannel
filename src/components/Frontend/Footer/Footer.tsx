@@ -17,30 +17,30 @@ export const Footer = () => {
         <div className="col-span-2 grid grid-cols-2">
           <div className="text-white font-[600] text-[14px] flex flex-col justify-center items-center py-5">
             <p className="mb-2">CALL US</p>
-            <p>01521583066</p>
+            <p>01800000886</p>
           </div>
           <div className="text-white font-[600] text-[14px] flex flex-col justify-center items-center py-5">
             <p className="mb-2">FOLLOW US</p>
             <div className="flex justify-center items-center gap-3">
-              <Link href={""}>
+              <Link href={"/"}>
                 <FontAwesomeIcon
                   className="h-5 w-5 text-gray-300"
                   icon={faFacebookF}
                 />
               </Link>
-              <Link href={""}>
+              <Link href={"/"}>
                 <FontAwesomeIcon
                   className="h-5 w-5 text-gray-300"
                   icon={faYoutube}
                 />
               </Link>
-              <Link href={""}>
+              <Link href={"/"}>
                 <FontAwesomeIcon
                   className="h-5 w-5 text-gray-300"
                   icon={faInstagram}
                 />
               </Link>
-              <Link href={""}>
+              <Link href={"/"}>
                 <FontAwesomeIcon
                   className="h-5 w-5 text-gray-300"
                   icon={faTiktok}
