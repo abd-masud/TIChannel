@@ -93,8 +93,8 @@ export const Navigation = () => {
         </form>
 
         <div className="flex justify-between items-center">
-          <Link className="fill-[#EAB308] mb-3" href="/">
-            <Image className="h-5 w-5" src={TITV} alt={"TV"} />
+          <Link className="text-[#EAB308] mb-3" href={"/tv"}>
+            <FontAwesomeIcon className="h-4 w-4" icon={faTv} />
           </Link>
 
           <Link
