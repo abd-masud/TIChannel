@@ -11,8 +11,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import TITV from "../../../../public/images/ti-tv.svg";
-import Image from "next/image";
 
 export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

@@ -11,11 +11,9 @@ import {
 import Image, { StaticImageData } from "next/image";
 import React, { useState } from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
-import { FaPhotoFilm } from "react-icons/fa6";
 import computer from "../../../../public/images/computer.png";
 import laptop from "../../../../public/images/laptop.png";
 import supplies from "../../../../public/images/supplies.png";
-import Link from "next/link";
 
 interface DataType {
   key: React.Key;

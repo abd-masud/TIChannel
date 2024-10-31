@@ -42,9 +42,9 @@ export const AccountPage = () => {
                   className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
                   type="text"
                   id="createNewPassword"
-                  // value={createNewPassword}
+                  value={createNewPassword}
                   onChange={(e) => setCreateNewPassword(e.target.value)}
-                  value={"Test User"}
+                  // value={"Test User"}
                   required
                 />
               </div>
@@ -60,9 +60,9 @@ export const AccountPage = () => {
                   className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
                   type="email"
                   id="confirmPassword"
-                  // value={confirmPassword}
+                  value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  value={"test@example.com"}
+                  // value={"test@example.com"}
                   required
                 />
               </div>
