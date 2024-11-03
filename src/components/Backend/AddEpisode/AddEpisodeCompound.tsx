@@ -19,7 +19,7 @@ const { Option } = Select;
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
-export const AddSeasonCompound = () => {
+export const AddEpisodeCompound = () => {
   const [thumbnailList, setThumbnailList] = useState<UploadFile[]>([]);
   const [posterList, setPosterList] = useState<UploadFile[]>([]);
   const [previewImage, setPreviewImage] = useState<string | undefined>();
@@ -64,7 +64,18 @@ export const AddSeasonCompound = () => {
         onFinish={onFinish}
       >
         <div className="bg-white rounded border p-5 shadow-md w-full h-full mb-5">
-          <p className="border-b pb-5 mb-5 font-bold">Series Info</p>
+          <p className="border-b pb-5 mb-5 font-bold">Season Info</p>
+          <Form.Item
+            label="Select Series"
+            name="series"
+            rules={[{ required: true, message: "Please select series!" }]}
+          >
+            <Select className="h-10" placeholder="Select series">
+              <Option value="option1">Option 1</Option>
+              <Option value="option2">Option 2</Option>
+              <Option value="option3">Option 3</Option>
+            </Select>
+          </Form.Item>
           <Form.Item
             label="Title"
             name="title"
@@ -86,11 +97,11 @@ export const AddSeasonCompound = () => {
           </Form.Item>
 
           <Form.Item
-            label="Genres"
-            name="genres"
-            rules={[{ required: true, message: "Please select genres!" }]}
+            label="Category"
+            name="category"
+            rules={[{ required: true, message: "Please select category!" }]}
           >
-            <Select className="h-10" placeholder="Select genres">
+            <Select className="h-10" placeholder="Select category">
               <Option value="option1">Option 1</Option>
               <Option value="option2">Option 2</Option>
               <Option value="option3">Option 3</Option>
@@ -107,28 +118,6 @@ export const AddSeasonCompound = () => {
               placeholder="Select release date"
               style={{ width: "100%" }}
             />
-          </Form.Item>
-
-          <Form.Item
-            label="Trailer URL(YouTube Only)"
-            name="url"
-            rules={[{ required: true, message: "Please enter the title!" }]}
-          >
-            <Input className="py-2" placeholder="Enter series title" />
-          </Form.Item>
-
-          <Form.Item
-            label="Custom Tag"
-            name="custom tag"
-            rules={[{ required: true, message: "Please select an option!" }]}
-          >
-            <Select className="h-10" placeholder="Select an option">
-              <Option value="None">None</Option>
-              <Option value="HD">HD</Option>
-              <Option value="UHD">UHD</Option>
-              <Option value="4K">4K</Option>
-              <Option value="720p">720p</Option>
-            </Select>
           </Form.Item>
         </div>
 
@@ -162,18 +151,7 @@ export const AddSeasonCompound = () => {
             </Upload>
           </ImgCrop>
 
-          <Form.Item
-            label="Premium / Free"
-            name="variant"
-            rules={[{ required: true, message: "Please select variant!" }]}
-            className="mt-10"
-          >
-            <Select className="h-10" placeholder="Select variant">
-              <Option value="Free">Free</Option>
-              <Option value="Premium">Premium</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item>
+          <Form.Item className="mt-10">
             <Button className="flex" type="primary" htmlType="submit">
               Submit
             </Button>

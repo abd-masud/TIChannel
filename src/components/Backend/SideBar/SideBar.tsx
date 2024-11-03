@@ -13,6 +13,7 @@ import { FaGear } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa";
 import { FaList } from "react-icons/fa";
 import { BsStack } from "react-icons/bs";
+import { FaPhotoFilm } from "react-icons/fa6";
 
 export const SideBar = () => {
   const pathname = usePathname();
@@ -94,6 +95,46 @@ export const SideBar = () => {
           >
             <FaList className="text-[16px] mr-3 w-5" />
             All Series
+          </Link>
+        </div>
+      </div>
+
+      <button
+        onClick={() => toggleSection("episode")}
+        className={`text-[13px] text-[#797c8b] hover:text-white font-[500] flex items-center transition duration-300 group h-11 w-full border-t border-[#252D37] ${
+          pathname.includes("/ti-admin/episode")
+            ? "text-white bg-[#1E2639]"
+            : ""
+        }`}
+      >
+        <div className="bg-primary h-[23px] w-[3px] group-hover:opacity-100 opacity-0 transition duration-300"></div>
+        <FaPhotoFilm className="ml-[21px] text-[16px] mr-3 w-5" />
+        Episode
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-500 transform ${
+          openSection === "episode"
+            ? "max-h-[90px] opacity-100"
+            : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="pl-[50px] bg-[#1D1B31] text-[13px]">
+          <Link
+            className={subLinkClass("/ti-admin/episode/add-episode")}
+            href="/ti-admin/episode/add-episode"
+            onClick={handleSubMenuClick}
+          >
+            <FaPlus className="text-[16px] mr-3 w-5" />
+            Add Episode
+          </Link>
+
+          <Link
+            className={subLinkClass("/ti-admin/episode/all-episode")}
+            href="/ti-admin/episode/all-episode"
+            onClick={handleSubMenuClick}
+          >
+            <FaList className="text-[16px] mr-3 w-5" />
+            All Episode
           </Link>
         </div>
       </div>
