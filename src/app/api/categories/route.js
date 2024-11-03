@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 export async function GET(req) {
     try {
         const client = await clientPromise;
-        const db = client.db('tichanel');
+        const db = client.db('tichannel');
         const categories = await db.collection('categories').find().toArray();
         return new Response(JSON.stringify(categories), { status: 200 });
     } catch (error) {
@@ -18,7 +18,7 @@ export async function GET(req) {
 export async function POST(req) {
     try {
         const client = await clientPromise;
-        const db = client.db('tichanel');
+        const db = client.db('tichannel');
         const { name, order } = await req.json();
 
         if (!name || !order) {
@@ -37,7 +37,7 @@ export async function POST(req) {
 export async function PUT(req) {
     try {
         const client = await clientPromise;
-        const db = client.db('tichanel');
+        const db = client.db('tichannel');
         const { id, name, order } = await req.json();
 
         if (!id || !name || !order) {
@@ -64,7 +64,7 @@ export async function PUT(req) {
 export async function DELETE(req) {
     try {
         const client = await clientPromise;
-        const db = client.db('tichanel');
+        const db = client.db('tichannel');
         const { id } = await req.json();
 
         if (!id) {
