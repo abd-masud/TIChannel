@@ -2,7 +2,7 @@ import clientPromise from '../../../lib/db';
 import { ObjectId } from 'mongodb';
 
 // Fetch all categories
-export async function GET(req) {
+export async function GET() {
     try {
         const client = await clientPromise;
         const db = client.db('tichannel');
