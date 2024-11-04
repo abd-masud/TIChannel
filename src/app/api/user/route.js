@@ -34,7 +34,7 @@ export async function POST(request) {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const result = await db.collection('users').insertOne({ name, email, password: hashedPassword });
+        const result = await db.collection('users').insertOne({ name, email, password: hashedPassword, role: 1 });
         return NextResponse.json({ success: true, message: 'User created successfully', userId: result.insertedId }, { status: 201 });
     } catch (error) {
         console.error('Error creating user:', error.message);
