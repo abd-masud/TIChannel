@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { NextResponse } from 'next/server';
 
-
 dotenv.config();
 
 const secret = "DAFBD862C62671166124189A61EB8DAFBD862C62671166124189A61EB8DAFBD862C62671166124189A61EB8"
