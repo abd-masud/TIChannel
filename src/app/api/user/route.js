@@ -13,6 +13,21 @@ if (!secret) {
     throw new Error('JWT_SECRET is not defined in .env file');
 }
 
+
+
+export async function GET() {
+    try {
+        const client = await clientPromise; const db = client.db('tichannel');
+        const users = await db.collection('users').find().toArray();
+        return NextResponse.json({ success: true, users }, { status: 200 });
+    } catch (error) {
+        console.error('Error fetching users:', error.message);
+        return NextResponse.json({ success: false, message: 'Error fetching users', details: error.message }, { status: 500 });
+    }
+}
+
+
+
 // Sign-up - Create a new user
 export async function POST(request) {
     const { name, email, password } = await request.json();

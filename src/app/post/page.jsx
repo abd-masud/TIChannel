@@ -7,6 +7,11 @@ export default function FileUpload() {
   const handleFileUpload = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
+    for (const [file, value] of formData.entries()) {
+      console.log(`${file}: ${value}`);
+    }
+
+   
 
     try {
       const response = await fetch('/api/genres', {
