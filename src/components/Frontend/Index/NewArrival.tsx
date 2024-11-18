@@ -1,94 +1,69 @@
 "use client";
 
 import Image from "next/image";
-import { faCircle, faInfo, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircle,
+  faInfo,
+  faPlus,
+  faAngleRight,
+  faPlay,
+  faAngleLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { NewRelease } from "./NewRelease";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-fade";
+import "swiper/css/navigation";
 import { Autoplay, EffectFade } from "swiper/modules";
+import { useEffect, useState } from "react";
 
-const newArrival = [
-  {
-    id: 1,
-    imageSrc: "/images/image1.jpg",
-    title: "Greats of Islam - 1",
-    year: 2020,
-    season: "1 Season",
-    subtitles: "2 Subtitles",
-    rating: "S+",
-    duration: "1h 30m",
-    description:
-      "He is the companion of the Messenger of God, may God bless him and grant him peace, and his first successor. Al-Siddiq had unique personal characteristics. He was not only the first person to convert to Islam, but he also converted the great Companions. Every nation has its scholars and great personalities, and he is the first great person to succeed the Messenger of God. He was the friend, the advocate and the supporter: the companion Abu Bakr Al-Siddiq in this special documentary.",
-    genre: "History",
-    type: "Islamic Documentary",
-  },
-  {
-    id: 2,
-    imageSrc: "/images/image2.jpg",
-    title: "Greats of Islam - 2",
-    year: 2020,
-    season: "1 Season",
-    subtitles: "2 Subtitles",
-    rating: "S+",
-    duration: "1h 30m",
-    description:
-      "He is the companion of the Messenger of God, may God bless him and grant him peace, and his first successor. Al-Siddiq had unique personal characteristics. He was not only the first person to convert to Islam, but he also converted the great Companions. Every nation has its scholars and great personalities, and he is the first great person to succeed the Messenger of God. He was the friend, the advocate and the supporter: the companion Abu Bakr Al-Siddiq in this special documentary.",
-    genre: "History",
-    type: "Islamic Documentary",
-  },
-  {
-    id: 3,
-    imageSrc: "/images/image3.jpg",
-    title: "Greats of Islam - 3",
-    year: 2020,
-    season: "1 Season",
-    subtitles: "2 Subtitles",
-    rating: "S+",
-    duration: "1h 30m",
-    description:
-      "He is the companion of the Messenger of God, may God bless him and grant him peace, and his first successor. Al-Siddiq had unique personal characteristics. He was not only the first person to convert to Islam, but he also converted the great Companions. Every nation has its scholars and great personalities, and he is the first great person to succeed the Messenger of God. He was the friend, the advocate and the supporter: the companion Abu Bakr Al-Siddiq in this special documentary.",
-    genre: "History",
-    type: "Islamic Documentary",
-  },
-  {
-    id: 4,
-    imageSrc: "/images/image4.jpg",
-    title: "Greats of Islam - 4",
-    year: 2020,
-    season: "1 Season",
-    subtitles: "2 Subtitles",
-    rating: "S+",
-    duration: "1h 30m",
-    description:
-      "He is the companion of the Messenger of God, may God bless him and grant him peace, and his first successor. Al-Siddiq had unique personal characteristics. He was not only the first person to convert to Islam, but he also converted the great Companions. Every nation has its scholars and great personalities, and he is the first great person to succeed the Messenger of God. He was the friend, the advocate and the supporter: the companion Abu Bakr Al-Siddiq in this special documentary.",
-    genre: "History",
-    type: "Islamic Documentary",
-  },
-  {
-    id: 5,
-    imageSrc: "/images/image5.jpg",
-    title: "Greats of Islam - 5",
-    year: 2020,
-    season: "1 Season",
-    subtitles: "2 Subtitles",
-    rating: "S+",
-    duration: "1h 30m",
-    description:
-      "He is the companion of the Messenger of God, may God bless him and grant him peace, and his first successor. Al-Siddiq had unique personal characteristics. He was not only the first person to convert to Islam, but he also converted the great Companions. Every nation has its scholars and great personalities, and he is the first great person to succeed the Messenger of God. He was the friend, the advocate and the supporter: the companion Abu Bakr Al-Siddiq in this special documentary.",
-    genre: "History",
-    type: "Islamic Documentary",
-  },
-];
+interface NewArrivalType {
+  custom_tag: string;
+  description: string;
+  genres: string;
+  release_date: string;
+  series_type: string;
+  title: string;
+  trailer_url: string;
+  _id: string;
+  _poster: string;
+  _thumbnail: string;
+}
 
 export const NewArrival = () => {
+  const [newArrival, setNewArrival] = useState<NewArrivalType[]>([]);
+
+  useEffect(() => {
+    const fetchNewArrival = async () => {
+      try {
+        const response = await fetch("/api/series");
+        const data = await response.json();
+        if (data.success) {
+          setNewArrival(data.series);
+        } else {
+          console.error("Failed to fetch new releases");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchNewArrival();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   return (
     <main className="relative lg:-top-[85px] -top-[60px] h-screen max-w-screen bg-black">
       <Swiper
         modules={[Autoplay, EffectFade]}
-        loop={true}
+        loop
         slidesPerView={1}
         autoplay={{
           delay: 5000,
@@ -99,48 +74,39 @@ export const NewArrival = () => {
         className="h-screen"
       >
         {newArrival.map((item) => (
-          <SwiperSlide key={item.id}>
+          <SwiperSlide key={item._id}>
             <div>
               <Image
                 className="lg:mb-0 mb-5 md:object-fill object-cover h-screen w-full"
-                src={item.imageSrc}
+                src={item._thumbnail}
                 width={630}
                 height={350}
                 alt={item.title}
               />
-
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-black to-transparent rounded-b h-full z-10"></div>
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent rounded-b h-[400px] z-10"></div>
 
-              <div className="absolute flex flex-col gap-1 sm:gap-2 lg:bottom-96 bottom-60 sm:px-12 px-4 z-20">
-                <h1 className="text-white text-[40px] sm:text-[50px] font-bold">
+              <div className="absolute flex flex-col gap-1 sm:gap-2 2xl:bottom-[360px] xl:bottom-[310px] lg:bottom-[270px] md:bottom-[260px] sm:bottom-[260px] bottom-[230px] sm:px-12 px-4 z-20">
+                <h1 className="text-white text-[40px] sm:text-[50px] font-bold animate-slideDown leading-[50px]">
                   {item.title}
                 </h1>
 
-                <p className="text-white flex items-center gap-1 font-[600] mt-10">
-                  {item.year}
-                  <FontAwesomeIcon className="mx-1 h-1 w-1" icon={faCircle} />
-                  {item.season}
-                  <FontAwesomeIcon className="mx-1 h-1 w-1" icon={faCircle} />
-                  {item.subtitles}
-                  <FontAwesomeIcon className="mx-1 h-1 w-1" icon={faCircle} />
-                  {item.rating}
-                </p>
+                <div className="flex items-center my-5">
+                  <p className="text-white flex items-center gap-1 font-[600]">
+                    {item.genres}
+                    <FontAwesomeIcon className="mx-1 h-1 w-1" icon={faCircle} />
+                  </p>
 
-                <p className="text-white font-[600]">
-                  Duration: {item.duration}
-                </p>
-
-                <p className="text-white flex items-center font-[600] mb-10">
-                  {item.genre}
-                  <FontAwesomeIcon className="mx-3 h-1 w-1" icon={faCircle} />
-                  {item.type}
-                </p>
+                  <p className="text-white flex items-center font-[600] ml-1">
+                    {formatDate(item.release_date)}
+                    <FontAwesomeIcon className="mx-3 h-1 w-1" icon={faCircle} />
+                  </p>
+                </div>
 
                 <div className="flex items-center">
                   <Link
-                    className="text-white bg-primary hover:bg-[#a70e15] font-[600] text-[14px] px-10 py-2 rounded text-center sm:inline-block block transition-all duration-300"
-                    href="/watch"
+                    className="text-white bg-primary hover:bg-[#a70e15] font-[600] text-[14px] px-10 py-2 rounded text-center sm:inline-block block transition-all duration-300 cursor-pointer"
+                    href={`/series/${item._id}`}
                   >
                     Watch Now
                   </Link>
@@ -156,8 +122,80 @@ export const NewArrival = () => {
           </SwiperSlide>
         ))}
       </Swiper>
-      <div className="sm:px-12 -mt-[200px] lg:-mt-[330px] px-4 relative z-20">
-        <NewRelease />
+
+      <div className="sm:px-12 2xl:bottom-[310px] xl:bottom-[280px] lg:bottom-[240px] md:bottom-[230px] sm:bottom-[230px] bottom-[200px] px-4 relative z-20">
+        <header className="flex justify-between items-center mb-4">
+          <h2 className="text-white text-lg font-bold">New Release</h2>
+          <Link href="/new-release">
+            <FontAwesomeIcon
+              className="h-5 w-5 text-white"
+              icon={faAngleRight}
+            />
+          </Link>
+        </header>
+
+        <div className="relative">
+          <button className="custom-prev-button-newRelease absolute z-10 left-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white h-8 w-8 rounded-full hover:bg-opacity-75 transition">
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </button>
+          <button className="custom-next-button-newRelease absolute z-10 right-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white h-8 w-8 rounded-full hover:bg-opacity-75 transition">
+            <FontAwesomeIcon icon={faAngleRight} />
+          </button>
+
+          <Swiper
+            loop
+            spaceBetween={16}
+            slidesPerView={2}
+            autoHeight={true}
+            navigation={{
+              prevEl: ".custom-prev-button-newRelease",
+              nextEl: ".custom-next-button-newRelease",
+            }}
+            breakpoints={{
+              640: { slidesPerView: 3 },
+              768: { slidesPerView: 4 },
+              1024: { slidesPerView: 5 },
+            }}
+            className="mt-4"
+          >
+            {newArrival.map((release) => (
+              <SwiperSlide
+                className="group h-200 hover:h-[300px] transition duration-300"
+                key={release._id}
+              >
+                <Link
+                  href={`/series/${release._id}`}
+                  className="relative block transition-transform duration-300 transform"
+                >
+                  <Image
+                    className="rounded-lg w-full object-cover h-full"
+                    src={release._thumbnail}
+                    alt={release.title}
+                    width={200}
+                    height={300}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent rounded-b h-28 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <FontAwesomeIcon
+                      className="h-14 w-14 text-gray-300"
+                      icon={faPlay}
+                    />
+                  </div>
+                  <div className="absolute bottom-2 left-4 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                    <p className="text-white font-semibold text-sm lg:text-lg">
+                      {release.title}
+                    </p>
+                    <div className="flex items-center text-white text-xs space-x-2">
+                      <span>{release.genres}</span>
+                      <FontAwesomeIcon icon={faCircle} className="h-1 w-1" />
+                      <span>{formatDate(release.release_date)}</span>
+                    </div>
+                  </div>
+                </Link>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </main>
   );

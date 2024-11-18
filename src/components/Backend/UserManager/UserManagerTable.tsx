@@ -11,8 +11,9 @@ import {
   Table,
   TableColumnsType,
 } from "antd";
-import React, { useState } from "react";
-import { MdDelete, MdEdit } from "react-icons/md";
+import React, { useEffect, useState } from "react";
+import { MdEdit } from "react-icons/md";
+import { FaBan } from "react-icons/fa";
 
 const { Option } = Select;
 
@@ -20,7 +21,7 @@ interface DataType {
   key: React.Key;
   name: string;
   email: string;
-  role: string;
+  status: string;
   subscription: string;
   action: string;
 }
@@ -28,32 +29,7 @@ interface DataType {
 export const UserManagerTable = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingData, setEditingData] = useState<DataType | null>(null);
-  const [data, setData] = useState<DataType[]>([
-    {
-      key: "1",
-      name: "Prison Chronicles",
-      email: "prison@gmail.com",
-      role: "User",
-      subscription: "Free",
-      action: "Options",
-    },
-    {
-      key: "2",
-      name: "지옥에서 온 판사",
-      email: "prison@gmail.com",
-      role: "User",
-      subscription: "Free",
-      action: "Options",
-    },
-    {
-      key: "3",
-      name: "Z Nation",
-      email: "prison@gmail.com",
-      role: "User",
-      subscription: "1 Month",
-      action: "Options",
-    },
-  ]);
+  const [data, setData] = useState<DataType[]>([]);
 
   const [form] = Form.useForm();
 
@@ -79,7 +55,7 @@ export const UserManagerTable = () => {
     });
   };
 
-  const handleDelete = (key: React.Key) => {
+  const handleBan = (key: React.Key) => {
     setData(data.filter((item) => item.key !== key));
   };
 
@@ -97,24 +73,54 @@ export const UserManagerTable = () => {
       key: "delete",
       label: (
         <Popconfirm
-          title="Delete this user?"
-          onConfirm={() => handleDelete(record.key)}
+          title={`Ban ${record.name}?`}
+          onConfirm={() => handleBan(record.key)}
           okText="Yes"
           cancelText="No"
         >
           <Button type="link" danger>
-            <MdDelete />
-            Delete
+            <FaBan />
+            Ban
           </Button>
         </Popconfirm>
       ),
     },
   ];
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("/api/user");
+        if (response.ok) {
+          const json = await response.json();
+
+          const user = Array.isArray(json.users) ? json.users : json;
+
+          const formattedData = user.map((item: any) => ({
+            key: item._id,
+            name: item.name,
+            email: item.email,
+            role: item.role,
+            subscription: item.subscription,
+          }));
+
+          setData(formattedData);
+          console.log(formattedData);
+        } else {
+          console.error("Failed to fetch user");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   const columns: TableColumnsType<DataType> = [
     {
       title: "#",
-      dataIndex: "key",
+      render: (_, __, index) => index + 1,
     },
     {
       title: "Full Name",
@@ -125,8 +131,8 @@ export const UserManagerTable = () => {
       dataIndex: "email",
     },
     {
-      title: "Role",
-      dataIndex: "role",
+      title: "Status",
+      dataIndex: "status",
     },
     {
       title: "Subscription",

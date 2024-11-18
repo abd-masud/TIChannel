@@ -136,7 +136,7 @@ export const AddChannelCompound = () => {
           <p className="border-b pb-5 mb-5 font-bold">Additional Info</p>
 
           <p className="text-left mb-2">Poster</p>
-          <ImgCrop rotationSlider aspect={16 / 9}>
+          <ImgCrop rotationSlider aspect={3 / 2}>
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.iogfdgf/api/upload"
               listType="picture-card"

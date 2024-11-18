@@ -5,26 +5,28 @@ import {
   Dropdown,
   Form,
   Input,
+  message,
   Modal,
   Popconfirm,
   Select,
   Table,
   TableColumnsType,
   Upload,
+  UploadFile,
+  UploadProps,
 } from "antd";
-import Image, { StaticImageData } from "next/image";
-import React, { useState } from "react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
-import computer from "../../../../public/images/computer.png";
-import laptop from "../../../../public/images/laptop.png";
-import supplies from "../../../../public/images/supplies.png";
 import TextArea from "antd/es/input/TextArea";
+import ImgCrop from "antd-img-crop";
 
 const { Option } = Select;
 
 interface DataType {
-  key: React.Key;
-  icon: StaticImageData;
+  key: string;
+  _id?: string;
+  icon: string;
   name: string;
   description: string;
   featured: string;
@@ -32,47 +34,53 @@ interface DataType {
   action: string;
 }
 
-export const GenresTable = () => {
+interface GenresTableProps {
+  refreshData: boolean;
+}
+
+export const GenresTable: React.FC<GenresTableProps> = ({ refreshData }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingData, setEditingData] = useState<DataType | null>(null);
-  const [data, setData] = useState<DataType[]>([
-    {
-      key: "1",
-      icon: computer,
-      name: "Prison Chronicles",
-      description:
-        "Twin brother and sister Dipper and Mabel Pines are in for an unexpected adventure when they spend the summer helping their great uncle Stan run a tourist trap in the mysterious town of Gravity Falls, Oregon.Twin brother and sister Dipper and Mabel Pines are in for an unexpected adventure when they spend the summer helping their great uncle Stan run a tourist trap in the mysterious town of Gravity Falls, Oregon.",
-      featured: "Not Featured",
-      status: "Published",
-      action: "Options",
-    },
-    {
-      key: "2",
-      icon: laptop,
-      name: "지옥에서 온 판사",
-      description:
-        "Twin brother and sister Dipper and Mabel Pines are in for an unexpected adventure when they spend the summer helping their great uncle Stan run a tourist trap in the mysterious town of Gravity Falls, Oregon.Twin brother and sister Dipper and Mabel Pines are in for an unexpected adventure when they spend the summer helping their great uncle Stan run a tourist trap in the mysterious town of Gravity Falls, Oregon.",
-      featured: "Not Featured",
-      status: "Published",
-      action: "Options",
-    },
-    {
-      key: "3",
-      icon: supplies,
-      name: "Z Nation",
-      description:
-        "Twin brother and sister Dipper and Mabel Pines are in for an unexpected adventure when they spend the summer helping their great uncle Stan run a tourist trap in the mysterious town of Gravity Falls, Oregon.Twin brother and sister Dipper and Mabel Pines are in for an unexpected adventure when they spend the summer helping their great uncle Stan run a tourist trap in the mysterious town of Gravity Falls, Oregon.",
-      featured: "Not Featured",
-      status: "Published",
-      action: "Options",
-    },
-  ]);
-
+  const [data, setData] = useState<DataType[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [form] = Form.useForm();
+
+  const fetchGenres = async () => {
+    try {
+      const res = await fetch("/api/genres", { method: "GET" });
+      const result = await res.json();
+      if (result.success) {
+        setData(
+          result.genres.map((genre: any, index: number) => ({
+            ...genre,
+            key: index,
+          }))
+        );
+      } else {
+        message.error("Failed to fetch genres");
+      }
+    } catch (error) {
+      message.error("Error fetching genres");
+    }
+  };
+
+  useEffect(() => {
+    fetchGenres();
+  }, [refreshData]);
 
   const handleEdit = (record: DataType) => {
     setEditingData(record);
     form.setFieldsValue(record);
+
+    setFileList([
+      {
+        uid: "-1",
+        name: record.name,
+        status: "done",
+        url: record.icon,
+      },
+    ]);
+
     setIsModalVisible(true);
   };
 
@@ -80,20 +88,57 @@ export const GenresTable = () => {
     setIsModalVisible(false);
     form.resetFields();
     setEditingData(null);
+    setFileList([]);
   };
 
-  const handleModalSubmit = () => {
-    form.validateFields().then((values) => {
-      const updatedData = data.map((item) =>
-        item.key === editingData?.key ? { ...item, ...values } : item
-      );
-      setData(updatedData);
-      handleModalClose();
-    });
+  const handleModalSubmit = async () => {
+    try {
+      const values = await form.validateFields();
+      const updatedItem = { id: editingData?._id, ...values };
+      console.log(updatedItem);
+      const response = await fetch(`/api/genres`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedItem),
+      });
+
+      if (response.ok) {
+        const updatedData = data.map((item) =>
+          item._id === editingData?._id ? { ...item, ...values } : item
+        );
+        setData(updatedData);
+        fetchGenres();
+        handleModalClose();
+      } else {
+        console.error("Failed to update genres");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
-  const handleDelete = (key: React.Key) => {
-    setData(data.filter((item) => item.key !== key));
+  const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+  const handleDelete = async (_id: string) => {
+    try {
+      const response = await fetch(`/api/genres?id=${_id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setData(data.filter((item) => item._id !== _id));
+        message.success("Genre deleted successfully");
+        fetchGenres();
+      } else {
+        const result = await response.json();
+        message.error(result.message || "Failed to delete genre from database");
+      }
+    } catch (error) {
+      console.error("Error deleting genre:", error);
+      message.error("Error deleting genre");
+    }
   };
 
   const getMenuItems = (record: DataType) => [
@@ -110,8 +155,8 @@ export const GenresTable = () => {
       key: "delete",
       label: (
         <Popconfirm
-          title="Delete this series?"
-          onConfirm={() => handleDelete(record.key)}
+          title={`Delete ${record.name}?`}
+          onConfirm={() => handleDelete(record._id!)}
           okText="Yes"
           cancelText="No"
         >
@@ -127,12 +172,12 @@ export const GenresTable = () => {
   const columns: TableColumnsType<DataType> = [
     {
       title: "#",
-      dataIndex: "key",
+      render: (_, __, index) => index + 1,
     },
     {
       title: "Icon",
       dataIndex: "icon",
-      render: (icon: StaticImageData) => (
+      render: (icon: string) => (
         <Image
           height={100}
           width={100}
@@ -185,30 +230,44 @@ export const GenresTable = () => {
         cancelText="Cancel"
       >
         <Form form={form} layout="vertical" name="genreForm">
-          <Form.Item>
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader overflow-hidden rounded"
-              showUploadList={false}
-              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-            >
-              {editingData?.icon ? (
-                <Image
-                  src={editingData.icon}
-                  alt="avatar"
-                  style={{ width: "100%" }}
-                  className="p-1"
-                />
-              ) : (
-                "Upload Image"
-              )}
-            </Upload>
+          <Form.Item
+            name="file"
+            label="Image"
+            rules={[
+              {
+                validator: async () => {
+                  if (fileList.length === 0) {
+                    throw new Error("Please upload an image!");
+                  }
+                },
+              },
+            ]}
+          >
+            <ImgCrop rotationSlider>
+              <Upload
+                listType="picture-card"
+                fileList={fileList}
+                onChange={onChange}
+                beforeUpload={(file) => {
+                  const isValid =
+                    file.type === "image/jpeg" || file.type === "image/png";
+                  if (!isValid) {
+                    message.error("You can only upload JPG/PNG files!");
+                  }
+                  return isValid;
+                }}
+              >
+                {fileList.length < 1 && "+ Upload"}
+              </Upload>
+            </ImgCrop>
           </Form.Item>
+
           <Form.Item
             name="name"
             label="Name"
-            rules={[{ required: true, message: "Please input the name!" }]}
+            rules={[
+              { required: true, message: "Please input the genre name!" },
+            ]}
           >
             <Input className="py-2" placeholder="Enter genre name" />
           </Form.Item>

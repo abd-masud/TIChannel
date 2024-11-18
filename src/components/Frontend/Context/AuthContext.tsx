@@ -7,11 +7,9 @@ import {
 } from "react";
 
 interface User {
-  id: number;
-  first_name: string;
-  role: string;
-  company: string;
-  image: string;
+  id: string;
+  name: string;
+  email: string;
 }
 
 interface AuthContextType {
@@ -27,7 +25,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        if (
+          parsedUser &&
+          parsedUser.id &&
+          parsedUser.name &&
+          parsedUser.email
+        ) {
+          setUser(parsedUser);
+        } else {
+          console.error("Invalid user data from localStorage");
+        }
+      } catch (error) {
+        console.error("Error parsing user data from localStorage", error);
+      }
     }
   }, []);
 

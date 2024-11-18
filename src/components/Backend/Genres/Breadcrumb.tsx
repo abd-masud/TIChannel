@@ -1,97 +1,98 @@
 "use client";
 
-import { Form, Input, Modal, Select } from "antd";
+import {
+  Form,
+  Input,
+  message,
+  Modal,
+  Select,
+  Upload,
+  UploadFile,
+  UploadProps,
+} from "antd";
+import ImgCrop from "antd-img-crop";
 import TextArea from "antd/es/input/TextArea";
 import Link from "next/link";
 import { useState } from "react";
-import { FaAngleRight } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
-import type { GetProp, UploadProps } from "antd";
-import Image from "next/image";
+import { FaAngleRight, FaPlus } from "react-icons/fa";
 
 const { Option } = Select;
 
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+interface BreadcrumbProps {
+  onAddGenres: () => void;
+}
 
-const getBase64 = (img: FileType, callback: (url: string) => void) => {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result as string));
-  reader.readAsDataURL(img);
-};
-
-const beforeUpload = (file: FileType) => {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
-  }
-  return isJpgOrPng && isLt2M;
-};
-
-export const Breadcrumb: React.FC = () => {
+export const Breadcrumb: React.FC<BreadcrumbProps> = ({ onAddGenres }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>();
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  const handleChange: UploadProps["onChange"] = (info) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj as FileType, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
-    }
+  const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
   };
-
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        fetch("/api/employees", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Success:", data);
-            setIsModalOpen(false);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      const formData = new FormData();
+      const file = fileList[0]?.originFileObj;
+
+      if (file) {
+        const date = new Date();
+        const formattedDate = `${date.getFullYear()}${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}${date.getDate().toString().padStart(2, "0")}`;
+        const formattedTime = `${date
+          .getHours()
+          .toString()
+          .padStart(2, "0")}${date
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}${date
+          .getSeconds()
+          .toString()
+          .padStart(2, "0")}${date
+          .getMilliseconds()
+          .toString()
+          .padStart(3, "0")}`;
+        const newFileName = `${formattedDate}.${formattedTime}${file.name.slice(
+          file.name.lastIndexOf(".")
+        )}`;
+
+        formData.append(
+          "file",
+          new File([file], newFileName, { type: file.type })
+        );
+      }
+
+      formData.append("name", values.name);
+      formData.append("description", values.description);
+      formData.append("featured", values.featured);
+      formData.append("status", values.status);
+
+      const response = await fetch("/api/genres", {
+        method: "POST",
+        body: formData,
       });
+      const result = await response.json();
+      console.log(result);
+      handleCancel();
+      onAddGenres();
+    } catch (error) {
+      console.error("Failed to submit:", error);
+    }
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    form.resetFields();
+    setFileList([]);
   };
+
   return (
     <>
       <main className="mb-4 pb-4 border-b flex justify-between items-center">
@@ -99,7 +100,7 @@ export const Breadcrumb: React.FC = () => {
           <p className="text-[16px] font-[600]">Genres Manager</p>
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <Link className="text-[12px] text-[#797c8b]" href="/">
+              <Link className="text-[12px] text-[#797c8b]" href="/ti-admin">
                 Dashboard
               </Link>
               <FaAngleRight className="text-[12px] text-[#797c8b] mx-2" />
@@ -115,51 +116,74 @@ export const Breadcrumb: React.FC = () => {
         </button>
       </main>
       <Modal
-        title="Add Channel"
+        title="Add Genre"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Submit"
         cancelText="Cancel"
       >
-        <Form form={form} layout="vertical" name="employeeForm">
-          <Form.Item>
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader"
-              showUploadList={false}
-              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-              beforeUpload={beforeUpload}
-              onChange={handleChange}
-            >
-              {imageUrl ? (
-                <Image src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-              ) : (
-                uploadButton
-              )}
-            </Upload>
+        <Form form={form} layout="vertical" name="genreForm">
+          <Form.Item
+            name="file"
+            label="Image"
+            rules={[
+              {
+                validator: async () => {
+                  if (fileList.length === 0) {
+                    throw new Error("Please upload an image!");
+                  }
+                },
+              },
+            ]}
+          >
+            <ImgCrop aspect={1 / 1} rotationSlider>
+              <Upload
+                listType="picture-card"
+                fileList={fileList}
+                onChange={onChange}
+                beforeUpload={(file) => {
+                  const isValid =
+                    file.type === "image/jpeg" ||
+                    file.type === "image/png" ||
+                    file.type === "image/gif" ||
+                    file.type === "image/webp";
+
+                  if (!isValid) {
+                    message.error("You can only upload JPG/PNG files!");
+                  }
+                  return isValid;
+                }}
+              >
+                {fileList.length < 1 && "+ Upload"}
+              </Upload>
+            </ImgCrop>
           </Form.Item>
+
           <Form.Item
             name="name"
             label="Name"
-            rules={[{ required: true, message: "Please input the name!" }]}
+            rules={[
+              { required: true, message: "Please input the genre name!" },
+            ]}
           >
-            <Input className="py-2" placeholder="Enter employee name" />
+            <Input className="py-2" placeholder="Enter genre name" />
           </Form.Item>
           <Form.Item
             name="description"
             label="Description"
-            rules={[{ required: true, message: "Please input the branch!" }]}
+            rules={[
+              { required: true, message: "Please input the description!" },
+            ]}
           >
-            <TextArea className="py-2" placeholder="Enter employee branch" />
+            <TextArea className="py-2" placeholder="Enter description" />
           </Form.Item>
           <Form.Item
             label="Featured"
             name="featured"
-            rules={[{ required: true, message: "Please select genres!" }]}
+            rules={[{ required: true, message: "Please select if featured!" }]}
           >
-            <Select className="h-10" placeholder="Select genres">
+            <Select className="h-10" placeholder="Select featured status">
               <Option value="Featured">Yes</Option>
               <Option value="Not Featured">No</Option>
             </Select>
@@ -167,9 +191,9 @@ export const Breadcrumb: React.FC = () => {
           <Form.Item
             label="Status"
             name="status"
-            rules={[{ required: true, message: "Please select genres!" }]}
+            rules={[{ required: true, message: "Please select status!" }]}
           >
-            <Select className="h-10" placeholder="Select genres">
+            <Select className="h-10" placeholder="Select status">
               <Option value="Published">Published</Option>
               <Option value="Not Published">Not Published</Option>
             </Select>

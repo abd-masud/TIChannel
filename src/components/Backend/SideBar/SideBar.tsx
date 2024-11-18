@@ -14,6 +14,7 @@ import { FaPlus } from "react-icons/fa";
 import { FaList } from "react-icons/fa";
 import { BsStack } from "react-icons/bs";
 import { FaPhotoFilm } from "react-icons/fa6";
+import { FaChevronDown } from "react-icons/fa";
 
 export const SideBar = () => {
   const pathname = usePathname();
@@ -63,13 +64,16 @@ export const SideBar = () => {
 
       <button
         onClick={() => toggleSection("series")}
-        className={`text-[13px] text-[#797c8b] hover:text-white font-[500] flex items-center transition duration-300 group h-11 w-full border-t border-[#252D37] ${
+        className={`text-[13px] text-[#797c8b] hover:text-white font-[500] flex items-center justify-between pr-5 transition duration-300 group h-11 w-full border-t border-[#252D37] ${
           pathname.includes("/ti-admin/series") ? "text-white bg-[#1E2639]" : ""
         }`}
       >
-        <div className="bg-primary h-[23px] w-[3px] group-hover:opacity-100 opacity-0 transition duration-300"></div>
-        <SiSteelseries className="ml-[21px] text-[16px] mr-3 w-5" />
-        Series
+        <div className="flex items-center">
+          <div className="bg-primary h-[23px] w-[3px] group-hover:opacity-100 opacity-0 transition duration-300"></div>
+          <SiSteelseries className="ml-[21px] text-[16px] mr-3 w-5" />
+          Series
+        </div>
+        <FaChevronDown />
       </button>
       <div
         className={`overflow-hidden transition-all duration-500 transform ${
@@ -101,15 +105,18 @@ export const SideBar = () => {
 
       <button
         onClick={() => toggleSection("episode")}
-        className={`text-[13px] text-[#797c8b] hover:text-white font-[500] flex items-center transition duration-300 group h-11 w-full border-t border-[#252D37] ${
+        className={`text-[13px] text-[#797c8b] hover:text-white font-[500] flex items-center justify-between pr-5 transition duration-300 group h-11 w-full border-t border-[#252D37] ${
           pathname.includes("/ti-admin/episode")
             ? "text-white bg-[#1E2639]"
             : ""
         }`}
       >
-        <div className="bg-primary h-[23px] w-[3px] group-hover:opacity-100 opacity-0 transition duration-300"></div>
-        <FaPhotoFilm className="ml-[21px] text-[16px] mr-3 w-5" />
-        Episode
+        <div className="flex items-center">
+          <div className="bg-primary h-[23px] w-[3px] group-hover:opacity-100 opacity-0 transition duration-300"></div>
+          <FaPhotoFilm className="ml-[21px] text-[16px] mr-3 w-5" />
+          Episode
+        </div>
+        <FaChevronDown />
       </button>
       <div
         className={`overflow-hidden transition-all duration-500 transform ${
@@ -141,13 +148,16 @@ export const SideBar = () => {
 
       <button
         onClick={() => toggleSection("tv")}
-        className={`text-[13px] text-[#797c8b] hover:text-white font-[500] flex items-center transition duration-300 group h-11 w-full border-t border-[#252D37] ${
+        className={`text-[13px] text-[#797c8b] hover:text-white font-[500] flex items-center justify-between pr-5 transition duration-300 group h-11 w-full border-t border-[#252D37] ${
           pathname.includes("/ti-admin/tv") ? "text-white bg-[#1E2639]" : ""
         }`}
       >
-        <div className="bg-primary h-[23px] w-[3px] group-hover:opacity-100 opacity-0 transition duration-300"></div>
-        <MdLiveTv className="ml-[21px] text-[16px] mr-3 w-5" />
-        Live TV
+        <div className="flex items-center">
+          <div className="bg-primary h-[23px] w-[3px] group-hover:opacity-100 opacity-0 transition duration-300"></div>
+          <MdLiveTv className="ml-[21px] text-[16px] mr-3 w-5" />
+          Live TV
+        </div>
+        <FaChevronDown />
       </button>
       <div
         className={`overflow-hidden transition-all duration-500 transform ${

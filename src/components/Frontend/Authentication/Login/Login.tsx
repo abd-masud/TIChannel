@@ -4,21 +4,33 @@ import { useAuth } from "@/components/Frontend/Context/AuthContext";
 import { Navigation } from "@/components/Frontend/Navigation/Navigation";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { useState } from "react";
 import google from "../../../../../public/images/google.svg";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import React from "react";
 
-// Import Google Sign-In functions (example: Firebase)
-// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-// Ensure Firebase is initialized in your project before using Firebase Auth.
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
   const { setUser } = useAuth();
 
+  // Handle the login form submission
+  // Handle the login form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -28,8 +40,8 @@ export const LoginPage = () => {
     };
 
     try {
-      const response = await fetch("/api/authentication/login", {
-        method: "POST",
+      const response = await fetch("/api/user", {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -37,10 +49,23 @@ export const LoginPage = () => {
       });
 
       if (response.ok) {
-        const { user: userData } = await response.json();
+        const { token, user } = await response.json();
+        const userData = {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        };
+
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("token", token);
+        localStorage.setItem("email", userData.email); // Store the email as well
         console.log("Logged in user data:", userData);
+
+        setEmail("");
+        setPassword("");
+
+        router.push("/");
       } else {
         const { message } = await response.json();
         setError(message);
@@ -51,25 +76,77 @@ export const LoginPage = () => {
     }
   };
 
+  // Handle Google sign-in
   const handleGoogleSignIn = async () => {
-    // const provider = new GoogleAuthProvider();
-    // const auth = getAuth();
+    setIsLoading(true);
+    const provider = new GoogleAuthProvider();
+    const auth = getAuth();
 
     try {
-      // const result = await signInWithPopup(auth, provider);
-      // const userData = result.user;
-      // setUser(userData);
-      // localStorage.setItem("user", JSON.stringify(userData));
-      // console.log("Logged in with Google:", userData);
+      const result = await signInWithPopup(auth, provider);
+      const firebaseUser = result.user;
+
+      const userData: User = {
+        id: firebaseUser.uid,
+        name: firebaseUser.displayName || "",
+        email: firebaseUser.email || "",
+      };
+
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+      console.log("Logged in with Google:", userData);
+      router.push("/");
     } catch (error) {
       console.error("Google Sign-In error:", error);
       setError("Google Sign-In failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // Close error message
   const handleCloseError = () => {
     setError("");
   };
+
+  // Handle invalid user data from localStorage
+  const handleInvalidUserData = () => {
+    try {
+      const storedUserData = localStorage.getItem("user");
+
+      // Ensure data exists and is valid
+      if (storedUserData) {
+        const parsedUserData: User = JSON.parse(storedUserData);
+
+        if (
+          parsedUserData &&
+          parsedUserData.id &&
+          parsedUserData.email &&
+          parsedUserData.name
+        ) {
+          setUser(parsedUserData);
+        } else {
+          throw new Error("Invalid user data in localStorage");
+        }
+      }
+    } catch (error) {
+      console.error("Invalid user data:", error);
+      // Optionally log the user out or clear localStorage
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      setError("Session expired. Please log in again.");
+    }
+  };
+
+  // Ensure the user data is validated on load
+  React.useEffect(() => {
+    handleInvalidUserData();
+  }, []);
 
   return (
     <main className="bg-auth_bg bg-cover bg-center bg-fixed w-screen h-screen">
@@ -91,9 +168,20 @@ export const LoginPage = () => {
             <button
               onClick={handleGoogleSignIn}
               className="flex items-center justify-center w-full py-2 text-[14px] font-[500] bg-white hover:bg-gray-200 text-black rounded transition-all duration-300"
+              disabled={isLoading}
             >
-              <Image src={google} alt="Google icon" className="w-5 h-5 mr-2" />
-              Sign in with Google
+              {isLoading ? (
+                <span>Signing in...</span>
+              ) : (
+                <>
+                  <Image
+                    src={google}
+                    alt="Google icon"
+                    className="w-5 h-5 mr-2"
+                  />
+                  Sign in with Google
+                </>
+              )}
             </button>
           </div>
           <div>
@@ -111,6 +199,7 @@ export const LoginPage = () => {
                 className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
                 type="email"
                 id="email"
+                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -120,15 +209,25 @@ export const LoginPage = () => {
               <label className="text-[14px] text-white" htmlFor="password">
                 Password
               </label>
-              <input
-                placeholder="Enter password"
-                className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <input
+                  placeholder="Enter password"
+                  className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-6 text-white"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">

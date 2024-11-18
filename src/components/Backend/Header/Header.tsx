@@ -1,18 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Popover, Modal } from "antd";
+import { Popover } from "antd";
 import Link from "next/link";
 import { VscThreeBars } from "react-icons/vsc";
 import { FaUser } from "react-icons/fa";
-import { BsQrCodeScan } from "react-icons/bs";
 import { MdFullscreen, MdOutlineFullscreenExit } from "react-icons/md";
 import { FaKey } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { FaSignOutAlt } from "react-icons/fa";
-import QRCode from "../../../../public/images/qr.jpg";
 import { IoIosSearch } from "react-icons/io";
-import Image from "next/image";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -20,29 +17,28 @@ interface HeaderProps {
 
 export const Header = ({ toggleSidebar }: HeaderProps) => {
   const [userData, setUserData] = useState({
-    name: "AL Ahsan",
+    name: "User",
     subscription: "Free",
   });
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("/api/user");
-        const data = await response.json();
-        setUserData({
-          name: data.name,
-          subscription: data.subscription,
-        });
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const response = await fetch("/api/user");
+  //       const data = await response.json();
+  //       setUserData({
+  //         name: data.name,
+  //         subscription: data.subscription,
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //     }
+  //   };
 
-    fetchUserData();
-  }, []);
+  //   fetchUserData();
+  // }, []);
 
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
@@ -64,14 +60,6 @@ export const Header = ({ toggleSidebar }: HeaderProps) => {
       document.removeEventListener("fullscreenchange", handleFullScreenChange);
     };
   }, []);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
 
   const popoverContent = (
     <div className="w-52">
@@ -144,9 +132,6 @@ export const Header = ({ toggleSidebar }: HeaderProps) => {
             <MdFullscreen className="h-8 w-8 fill-black" />
           )}
         </button>
-        <button onClick={showModal}>
-          <BsQrCodeScan className="h-6 w-6 fill-black" />
-        </button>
         <Popover
           content={popoverContent}
           trigger="click"
@@ -157,16 +142,6 @@ export const Header = ({ toggleSidebar }: HeaderProps) => {
           </button>
         </Popover>
       </div>
-
-      <Modal
-        title="Scan QR Code"
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-        className="flex justify-center items-center"
-      >
-        <Image src={QRCode} alt={"QRCode"} />
-      </Modal>
     </main>
   );
 };

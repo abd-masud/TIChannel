@@ -11,11 +11,18 @@ export const Breadcrumb: React.FC = () => {
           <p className="text-[16px] font-[600]">Edit Series</p>
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <Link className="text-[12px] text-[#797c8b]" href="/">
+              <Link className="text-[12px] text-[#797c8b]" href="/ti-admin">
                 Dashboard
               </Link>
               <FaAngleRight className="text-[12px] text-[#797c8b] mx-2" />
               <p className="text-[12px] text-[#797c8b]">Series</p>
+              <FaAngleRight className="text-[12px] text-[#797c8b] mx-2" />
+              <Link
+                className="text-[12px] text-[#797c8b]"
+                href="/ti-admin/series/all-series"
+              >
+                All Series
+              </Link>
               <FaAngleRight className="text-[12px] text-[#797c8b] mx-2" />
               <p className="text-[12px] text-[#797c8b]">Edit Series</p>
             </div>

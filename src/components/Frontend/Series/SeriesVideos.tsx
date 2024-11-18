@@ -23,7 +23,7 @@ if (videojs.getPlugin("overlay") === undefined) {
   videojs.registerPlugin("overlay", overlay);
 }
 
-export const PlayVideos: React.FC = () => {
+export const SeriesVideos: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<typeof videojs.players | null>(null);
 
@@ -39,7 +39,7 @@ export const PlayVideos: React.FC = () => {
           fluid: true,
           sources: [
             {
-              src: "videos/video.mp4",
+              src: "/videos/video.mp4",
               type: "video/mp4",
             },
           ],
@@ -50,7 +50,7 @@ export const PlayVideos: React.FC = () => {
             overlays: [
               {
                 content:
-                  "<div class='custom-overlay'>You are using free subscription. Please choose a plan</div>",
+                  "<a href='/subscribe' class='custom-overlay'>You are using free subscription. Please choose a plan</a>",
                 start: 5,
                 // end: 10,
                 align: "top-right",
@@ -158,9 +158,9 @@ export const PlayVideos: React.FC = () => {
           </div>
         </div>
         <div className="">
-          <button className="text-white border border-gray-600 rounded mb-4 px-10 mx-4 py-2">
-            Season 1
-          </button>
+          <div className="text-white text-center border border-gray-600 rounded sm:mx-0 mx-3 mb-4 py-2">
+            Episodes
+          </div>
           <div className="">
             <Link
               className="grid grid-cols-5 bg-black hover:bg-gray-800 px-3 py-1 transition duration-300 mb-2 rounded w-full"

@@ -6,27 +6,36 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export const SignUpPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [createPassword, setCreatePassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCreatePassword, setShowCreatePassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
   const { setUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (createPassword !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     const payload = {
       name,
       email,
-      createPassword,
-      confirmPassword,
+      password: createPassword,
     };
 
     try {
-      const response = await fetch("/api/authentication/login", {
+      const response = await fetch("/api/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,14 +43,19 @@ export const SignUpPage = () => {
         body: JSON.stringify(payload),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const { user: userData } = await response.json();
-        setUser(userData);
-        localStorage.setItem("user", JSON.stringify(userData));
-        console.log("Logged in user data:", userData);
+        setUser({ id: data.id, name: data.name, email: data.email });
+
+        setName("");
+        setEmail("");
+        setCreatePassword("");
+        setConfirmPassword("");
+
+        router.push("/authentication/login");
       } else {
-        const { message } = await response.json();
-        setError(message);
+        setError(data.message || "An unexpected error occurred.");
       }
     } catch (error) {
       console.error("An error occurred:", error);
@@ -52,6 +66,15 @@ export const SignUpPage = () => {
   const handleCloseError = () => {
     setError("");
   };
+
+  const toggleCreatePasswordVisibility = () => {
+    setShowCreatePassword(!showCreatePassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <main className="bg-auth_bg bg-cover bg-center bg-fixed w-screen h-screen">
       <div className="sticky top-0 z-50">
@@ -59,7 +82,7 @@ export const SignUpPage = () => {
       </div>
       {error && (
         <div className="flex items-center px-3 py-2 mb-4 rounded-lg bg-black text-red-600 border border-red-600 absolute sm:top-[100px] top-[70px] left-5 z-50">
-          <div className="text-sm font-medium">Password Not Matched</div>
+          <div className="text-sm font-medium">{error}</div>
           <button onClick={handleCloseError}>
             <FontAwesomeIcon className="ml-3 text-[14px]" icon={faXmark} />
           </button>
@@ -77,7 +100,7 @@ export const SignUpPage = () => {
               </label>
               <input
                 placeholder="Enter your name"
-                className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300  mt-2"
+                className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
                 type="text"
                 id="name"
                 value={name}
@@ -91,7 +114,7 @@ export const SignUpPage = () => {
               </label>
               <input
                 placeholder="Enter email address"
-                className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300  mt-2"
+                className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
                 type="email"
                 id="email"
                 value={email}
@@ -106,15 +129,24 @@ export const SignUpPage = () => {
               >
                 Create Password
               </label>
-              <input
-                placeholder="Enter password"
-                className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300  mt-2"
-                type="password"
-                id="createPassword"
-                value={createPassword}
-                onChange={(e) => setCreatePassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <input
+                  placeholder="Enter password"
+                  className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
+                  type={showCreatePassword ? "text" : "password"}
+                  id="createPassword"
+                  value={createPassword}
+                  onChange={(e) => setCreatePassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-6 text-white"
+                  onClick={toggleCreatePasswordVisibility}
+                >
+                  {showCreatePassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
             <div className="mb-4">
               <label
@@ -123,23 +155,32 @@ export const SignUpPage = () => {
               >
                 Confirm Password
               </label>
-              <input
-                placeholder="Enter confirm password"
-                className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300  mt-2"
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <input
+                  placeholder="Enter confirm password"
+                  className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-6 text-white"
+                  onClick={toggleConfirmPasswordVisibility}
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
             <input
-              className="text-[14px] font-[500] bg-primary hover:bg-primary-mouse w-full py-2 rounded text-white cursor-pointer focus:bg-primary-mouse transition-all duration-300 "
+              className="text-[14px] font-[500] bg-primary hover:bg-primary-mouse w-full py-2 rounded text-white cursor-pointer focus:bg-primary-mouse transition-all duration-300"
               type="submit"
               value={"Sign Up"}
             />
             <p className="text-[14px] text-[#9B9B9B] font-[500] mt-4">
-              Already have account?{" "}
+              Already have an account?{" "}
               <Link
                 className="text-red-600 ml-1"
                 href={"/authentication/login"}

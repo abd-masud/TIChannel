@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {
+  faAngleLeft,
   faAngleRight,
   faCircle,
   faPlay,
@@ -11,7 +12,7 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, Navigation } from "swiper/modules";
 
 const trending = [
   {
@@ -94,56 +95,69 @@ export const Trending = () => {
         </div>
       </div>
 
-      <Swiper
-        modules={[Autoplay]}
-        loop={true}
-        spaceBetween={16}
-        slidesPerView={2}
-        autoHeight={true}
-        breakpoints={{
-          640: { slidesPerView: 3 },
-          768: { slidesPerView: 4 },
-          1024: { slidesPerView: 5 },
-        }}
-        className="mt-4"
-      >
-        {trending.map((trending) => (
-          <SwiperSlide key={trending.id}>
-            <Link
-              className="relative group h-full scale-100 group"
-              href={"/watch"}
-            >
-              <Image
-                className="rounded-lg h-full w-full object-cover"
-                src={trending.imageSrc}
-                alt={trending.title}
-                width={200}
-                height={300}
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent rounded-b h-28 opacity-0 group-hover:opacity-100 transition duration-300"></div>
-              <div className="absolute top-0 h-full w-full flex justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300">
-                <FontAwesomeIcon
-                  className="h-14 w-14 text-gray-300 sm:visible invisible"
-                  icon={faPlay}
+      <div className="relative">
+        <button className="custom-prev-button-trending absolute z-10 left-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white h-8 w-8 rounded-full hover:bg-opacity-75 transition">
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </button>
+        <button className="custom-next-button-trending absolute z-10 right-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white h-8 w-8 rounded-full hover:bg-opacity-75 transition">
+          <FontAwesomeIcon icon={faAngleRight} />
+        </button>
+
+        <Swiper
+          modules={[Autoplay, Navigation]}
+          loop={true}
+          spaceBetween={16}
+          slidesPerView={2}
+          autoHeight={true}
+          navigation={{
+            prevEl: ".custom-prev-button-trending",
+            nextEl: ".custom-next-button-trending",
+          }}
+          breakpoints={{
+            640: { slidesPerView: 3 },
+            768: { slidesPerView: 4 },
+            1024: { slidesPerView: 5 },
+          }}
+          className="mt-4"
+        >
+          {trending.map((item) => (
+            <SwiperSlide key={item.id}>
+              <Link
+                className="relative group h-full scale-100 group"
+                href={"/watch"}
+              >
+                <Image
+                  className="rounded-lg h-full w-full object-cover"
+                  src={item.imageSrc}
+                  alt={item.title}
+                  width={200}
+                  height={300}
                 />
-              </div>
-              <div className="absolute bottom-2 left-4">
-                <p className="text-white font-[500] lg:text-[20px] text-[14px] z-10 opacity-0 group-hover:opacity-100 transition duration-300">
-                  {trending.title}
-                </p>
-                <div className="sm:flex block gap-2 items-center opacity-0 group-hover:opacity-100 transition duration-300">
-                  <p className="text-white text-[14px]">{trending.category}</p>
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent rounded-b h-28 opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                <div className="absolute top-0 h-full w-full flex justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300">
                   <FontAwesomeIcon
-                    className="h-1 w-1 text-white sm:block hidden"
-                    icon={faCircle}
+                    className="h-14 w-14 text-gray-300 sm:visible invisible"
+                    icon={faPlay}
                   />
-                  <p className="text-white text-[14px]">{trending.duration}</p>
                 </div>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+                <div className="absolute bottom-2 left-4">
+                  <p className="text-white font-[500] lg:text-[20px] text-[14px] z-10 opacity-0 group-hover:opacity-100 transition duration-300">
+                    {item.title}
+                  </p>
+                  <div className="sm:flex block gap-2 items-center opacity-0 group-hover:opacity-100 transition duration-300">
+                    <p className="text-white text-[14px]">{item.category}</p>
+                    <FontAwesomeIcon
+                      className="h-1 w-1 text-white sm:block hidden"
+                      icon={faCircle}
+                    />
+                    <p className="text-white text-[14px]">{item.duration}</p>
+                  </div>
+                </div>
+              </Link>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </main>
   );
 };

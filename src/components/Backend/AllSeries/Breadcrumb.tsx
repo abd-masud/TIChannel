@@ -11,7 +11,7 @@ export const Breadcrumb: React.FC = () => {
           <p className="text-[16px] font-[600]">All Series</p>
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <Link className="text-[12px] text-[#797c8b]" href="/">
+              <Link className="text-[12px] text-[#797c8b]" href="/ti-admin">
                 Dashboard
               </Link>
               <FaAngleRight className="text-[12px] text-[#797c8b] mx-2" />
@@ -23,7 +23,7 @@ export const Breadcrumb: React.FC = () => {
         </div>
         <Link
           className="bg-primary text-white transition duration-300 text-[13px] py-2 px-3 rounded ml-4"
-          href={"/series/add-series"}
+          href={"/ti-admin/series/add-series"}
         >
           <FaPlus />
         </Link>

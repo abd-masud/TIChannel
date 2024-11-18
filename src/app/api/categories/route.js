@@ -24,7 +24,7 @@ export async function POST(req) {
         if (!name || !order) {
             return new Response(JSON.stringify({ error: 'Name and order are required' }), { status: 400 });
         }
-        
+
         const result = await db.collection('categories').insertOne({ name, order });
         return new Response(JSON.stringify({ message: 'Category added successfully', categoryId: result.insertedId }), { status: 201 });
     } catch (error) {

@@ -7,11 +7,14 @@ import { faAngleLeft, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export const NewPasswordPage = () => {
   const router = useRouter();
   const [createNewPassword, setCreateNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCreatePassword, setShowCreatePassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   // const { setUser } = useAuth();
 
@@ -60,6 +63,14 @@ export const NewPasswordPage = () => {
     setError("");
   };
 
+  const toggleCreatePasswordVisibility = () => {
+    setShowCreatePassword(!showCreatePassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <main className="bg-auth_bg bg-cover bg-center bg-fixed w-screen h-screen">
       <div className="sticky top-0 z-50">
@@ -76,7 +87,7 @@ export const NewPasswordPage = () => {
       <div className="flex justify-center items-center w-screen h-[calc(100vh-85px)]">
         <div className="w-[500px] bg-[#66636342] backdrop-blur-lg sm:px-10 px-8 sm:py-14 py-12 mx-5">
           <h2 className="text-white font-[700] text-[20px] mb-5">
-            Change Password
+            New Password
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -86,15 +97,24 @@ export const NewPasswordPage = () => {
               >
                 Create New Password
               </label>
-              <input
-                placeholder="Enter new password"
-                className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
-                type="password"
-                id="createNewPassword"
-                value={createNewPassword}
-                onChange={(e) => setCreateNewPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <input
+                  placeholder="Enter new password"
+                  className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
+                  type={showCreatePassword ? "text" : "password"}
+                  id="createNewPassword"
+                  value={createNewPassword}
+                  onChange={(e) => setCreateNewPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-6 text-white"
+                  onClick={toggleCreatePasswordVisibility}
+                >
+                  {showCreatePassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
             <div className="mb-4">
               <label
@@ -103,15 +123,24 @@ export const NewPasswordPage = () => {
               >
                 Confirm Password
               </label>
-              <input
-                placeholder="Enter confirm password"
-                className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <input
+                  placeholder="Enter confirm password"
+                  className="border text-[14px] text-white py-3 px-[10px] w-full bg-transparent hover:border-[#B9C1CC] focus:outline-none focus:right-0 focus:border-[#B9C1CC] rounded-md transition-all duration-300 mt-2"
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-6 text-white"
+                  onClick={toggleConfirmPasswordVisibility}
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
             <input
               className="text-[14px] font-[500] bg-primary hover:bg-primary-mouse w-full py-2 rounded text-white cursor-pointer focus:bg-primary-mouse transition-all duration-300"
